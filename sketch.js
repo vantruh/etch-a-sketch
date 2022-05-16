@@ -5,7 +5,8 @@ let drawMode = true; // true - draw "on hover"; false - draw on mousedown
 let drawing = false; // checks if user holds mouse button to draw
 
 // 2 events for drawing in "on mousedown mode"
-window.addEventListener("mousedown", drawStart);
+//window.addEventListener("mousedown", drawStart); 
+//^^ moved to cell class to start drawing immideately^^
 window.addEventListener("mouseup", drawStop)
 
 // Creates grid inside #grid container with size x size cells
@@ -18,7 +19,7 @@ function buildGrid (size) {
             let cell = document.createElement("div");
             cell.classList.add("cell");
             cell.addEventListener("mouseover", changeColor);
-            
+            cell.addEventListener("click", changeColor);
             cellRow.appendChild(cell);
         }
         grid.appendChild(cellRow);
@@ -56,6 +57,7 @@ function changeColor(e) {
 // 3 functions in draw-mode
 function drawStart(e) {
     drawing = true;
+    changeColor(e);
 }
 
 function drawStop(e) {
@@ -68,6 +70,7 @@ function changeColorDrawMode(e) {
     }
 }
 
+// Empties the grid
 function clearGrid() {
     grid.innerHTML="";
 }
@@ -76,6 +79,7 @@ function getSize() {
     return slider.value;
 }
 
+//  Builds new grid
 function rebuildGrid() {
     clearGrid();
     buildGrid(getSize());
@@ -123,6 +127,7 @@ slider.oninput = () => {
     sliderLabel.textContent = `SIZE: ${newValue}x${newValue}`;
 }
 
+// Toggle random-color and black drawing modes. Also paints the button
 function changeColorMode() {
     rainbowMode = !rainbowMode;
     changeDecorationColor();
@@ -137,6 +142,7 @@ function changeColorMode() {
     }
 }
 
+//  Toggle mode from hover-drawing to hold-mouse-drawing
 function changeDrawMode() {
     drawMode = !drawMode;
     const drawButton = document.querySelector(".click-mode");
@@ -146,13 +152,17 @@ function changeDrawMode() {
             drawButton.src="icons/cursor.svg";
             cells.forEach(cell => {
                 cell.addEventListener('mouseover', changeColor);
+                cell.addEventListener("click", changeColor);
+                cell.removeEventListener("mousedown", drawStart);
             });
             break
         case false:
             drawButton.src="icons/cursor-click.svg";
             cells.forEach(cell => {
                 cell.removeEventListener('mouseover', changeColor);
+                cell.removeEventListener("click", changeColor);
                 cell.addEventListener('mouseover', changeColorDrawMode);
+                cell.addEventListener("mousedown", drawStart);
             });
             break
     }
