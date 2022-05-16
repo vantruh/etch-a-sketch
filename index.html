@@ -10,12 +10,16 @@
         <h1 class="text">SQU ARE PAINTING</h1>
         <div class="main-content">
             <div class="settings">
-                <div class="click-mode button"></div>
+                <img src="icons/cursor.svg" alt="" class="click-mode button" onclick="changeDrawMode()">
                 <div class="color-mode button" onclick="changeColorMode()"></div>
             </div>
             <div id="grid-container">
                 <div id="grid">
                 </div>
+            </div>
+            <div class="settings invisible">
+                <div class="button"></div>
+                <div class="button"></div>
             </div>
         </div>
         <input type="range" name="size-slider" id="size-slider" min="4" max="64" value="16">
