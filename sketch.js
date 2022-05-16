@@ -1,6 +1,7 @@
 const grid = document.querySelector("#grid");
 const slider = document.querySelector("#size-slider");
 let rainbowMode = true;
+let drawMode = true;
 
 
 
@@ -101,6 +102,19 @@ function changeColorMode() {
             break
         case true:
             colorButton.style.background = "linear-gradient(to right, red,orange,yellow,green,blue,indigo,violet)";
+            break
+    }
+}
+
+function changeDrawMode () {
+    drawMode = !drawMode;
+    const drawButton = document.querySelector(".click-mode");
+    switch (drawMode) {
+        case true:
+            drawButton.src="icons/cursor.svg";
+            break
+        case false:
+            drawButton.src="icons/cursor-click.svg";
             break
     }
 }
