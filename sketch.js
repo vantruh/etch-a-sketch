@@ -5,6 +5,7 @@ const grid = document.querySelector("#grid");
 
 // Creates grid inside #grid container with size x size cells
 function generateGrid (size) {
+    clearGrid();
     for (let row = 0; row<size; row++) {
         let cellRow= document.createElement("div");
         cellRow.classList.add("cell-row")
@@ -15,4 +16,8 @@ function generateGrid (size) {
         }
         grid.appendChild(cellRow);
     }
+}
+
+function clearGrid() {
+    grid.innerHTML="";
 }
