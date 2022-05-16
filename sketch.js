@@ -1,9 +1,12 @@
 const grid = document.querySelector("#grid");
 const slider = document.querySelector("#size-slider");
-let rainbowMode = true;
-let drawMode = true;
+let rainbowMode = true; // true - random colors; false - black.
+let drawMode = true; // true - draw "on hover"; false - draw on mousedown
+let drawing = false; // checks if user holds mouse button to draw
 
-
+// 2 events for drawing in "on mousedown mode"
+window.addEventListener("mousedown", drawStart);
+window.addEventListener("mouseup", drawStop)
 
 // Creates grid inside #grid container with size x size cells
 function buildGrid (size) {
@@ -15,6 +18,7 @@ function buildGrid (size) {
             let cell = document.createElement("div");
             cell.classList.add("cell");
             cell.addEventListener("mouseover", changeColor);
+            
             cellRow.appendChild(cell);
         }
         grid.appendChild(cellRow);
@@ -40,8 +44,27 @@ function getRandomRgbStringDarker() {
 function changeColor(e) {
     switch (rainbowMode) {
         case true:
-        let generatedColor = getRandomRgbString();
-        e.target.style.backgroundColor = generatedColor;        
+            let generatedColor = getRandomRgbString();
+            e.target.style.backgroundColor = generatedColor;
+            break
+        case false:
+            e.target.style.backgroundColor = "rgb(0,0,0)";
+            break        
+    }
+}
+
+// 3 functions in draw-mode
+function drawStart(e) {
+    drawing = true;
+}
+
+function drawStop(e) {
+    drawing = false;
+}
+
+function changeColorDrawMode(e) {
+    if (drawing) {
+        changeColor(e);
     }
 }
 
@@ -56,22 +79,30 @@ function getSize() {
 function rebuildGrid() {
     clearGrid();
     buildGrid(getSize());
+    changeDrawMode();
+    changeDrawMode();
 }
 
 function changeSize(newSize) {
     clearGrid();
     buildGrid(newSize);
+    changeDrawMode();
+    changeDrawMode();
 }
 
-// Changes text, borders and bg colors to random.
+// Changes text, borders and bg colors to random/black.
 function changeDecorationColor() {
     let root = document.documentElement;
+    const fieldBg = document.querySelector("#grid-container");
     switch (rainbowMode) {
         case true:
-            root.style.setProperty('--color-all', getRandomRgbStringDarker());
+            let newRandomColor = getRandomRgbStringDarker();
+            root.style.setProperty('--color-all', newRandomColor);
+            fieldBg.style.backgroundColor = newRandomColor;
             break
         case false:
             root.style.setProperty('--color-all', "black");
+            fieldBg.style.backgroundColor = "rgba(0,0,0,0.5)";
             break
     }
 }
@@ -106,15 +137,23 @@ function changeColorMode() {
     }
 }
 
-function changeDrawMode () {
+function changeDrawMode() {
     drawMode = !drawMode;
     const drawButton = document.querySelector(".click-mode");
+    const cells = document.querySelectorAll(".cell");
     switch (drawMode) {
         case true:
             drawButton.src="icons/cursor.svg";
+            cells.forEach(cell => {
+                cell.addEventListener('mouseover', changeColor);
+            });
             break
         case false:
             drawButton.src="icons/cursor-click.svg";
+            cells.forEach(cell => {
+                cell.removeEventListener('mouseover', changeColor);
+                cell.addEventListener('mouseover', changeColorDrawMode);
+            });
             break
     }
 }
